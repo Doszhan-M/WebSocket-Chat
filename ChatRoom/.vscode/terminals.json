@@ -1,0 +1,33 @@
+{
+    "autorun": true,
+    "terminals": [
+      {
+        "name": "django",
+        "description": "This is a description",
+        "focus": true,
+        "commands": [
+          "source venv/bin/activate",
+          "cd project",
+          "python3 manage.py runserver"
+        ],
+        "execute": false,
+      },
+      {
+        "name": "redis",
+        "execute": false,
+        "commands": [
+          "ps aux | grep redis",
+          "kill -9 "
+        ]
+      },
+      {
+        "name": "celery",
+        "execute": false,
+        "commands": [
+          "source venv/bin/activate",
+          "cd project",
+          "celery -A project worker -l INFO"
+        ]
+      }
+    ]
+  }

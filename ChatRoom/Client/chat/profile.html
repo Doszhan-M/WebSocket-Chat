@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% extends "chat/base.html" %}
+{% load static %}
+
+
+{% block head_title %}ChatRoom{% endblock head_title%}
+
+
+{% block content %}
+<div class="profile">
+<p>логин</p>
+<p>о себе </p>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script src="{%static 'js/profile.js' %}"></script>
+{% endblock script %}
