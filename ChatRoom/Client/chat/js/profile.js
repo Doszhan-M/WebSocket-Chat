@@ -10,10 +10,10 @@ let user;
 profileData().then(data => user = data);
 
 setTimeout(() => displayResult(user), 300)
-displayResult(user)
+
 
 // Функция обработки полученного результата
 function displayResult(apiData) {
-        console.log(apiData.age)
+        console.log(apiData)
     };
     

@@ -1,5 +1,5 @@
 # WebSocket-Chat
-![picture](https://www.silversurfers.com/wp-content/uploads/2013/11/bigstock-People-chatting-through-the-in-15779303.jpg)
+![picture](https://st.depositphotos.com/1008768/4671/i/950/depositphotos_46719647-stock-photo-live-chat.jpg)
 
 ## Инструкции по запуску сервера
 
