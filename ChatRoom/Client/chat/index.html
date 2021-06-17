@@ -7,9 +7,24 @@
 
 
 {% block content %}
-<h1>What chat room would you like to enter?</h1><br>
-<input id="room-name-input" type="text" size="100"><br>
-<input id="room-name-submit" type="button" value="Enter">
+<div class="main">
+<div class="common_chat">
+    <h2>Общий Чат</h2>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+</div>
+<div class="users">
+    <h2>Список пользователей</h2>
+    <p>Список пользователей</p>
+    <p>Список пользователей</p>
+    <p>Список пользователей</p>
+    <p>Список пользователей</p>
+    <p>Список пользователей</p>
+
+</div>
+</div>
+
 {% endblock content %}
 
 

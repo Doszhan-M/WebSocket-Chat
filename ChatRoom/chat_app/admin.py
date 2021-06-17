@@ -6,5 +6,3 @@ from .models import UserProfile, Room
 admin.site.register(UserProfile)
 admin.site.register(Room)
 
-
-

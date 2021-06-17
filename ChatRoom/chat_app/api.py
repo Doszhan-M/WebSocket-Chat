@@ -1,19 +1,26 @@
-from re import template
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.renderers import TemplateHTMLRenderer
-
-from .models import UserProfile, Room
-from .serializers import ProfileSerializer
+from .models import UserProfile
+from .serializers import ProfileSerializer, RoomSerializer
+from rest_framework import generics
 
 
-class ProfileViewApi(APIView):
+class ProfileViewApi(generics.RetrieveAPIView):
+    """Получить данные профиля"""
+    serializer_class = ProfileSerializer
 
-    # renderer_classes = [TemplateHTMLRenderer]
-    # template_name = 'chat/profile_list.html'
+    def get_object(self):
+        user = UserProfile.objects.get(user=self.request.user)
+        return user
 
-    # Вывод профайла
-    def get(self, request):
-        user = UserProfile.objects.get(user=request.user)
-        serializer = ProfileSerializer(user, many = False)
-        return Response(serializer.data)
+
+class ProfileUpdateApi(generics.RetrieveUpdateAPIView):
+    """Изменить данные профиля"""
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        user = UserProfile.objects.get(user=self.request.user)
+        return user
+
+
+class RoomUpdateApi(generics.CreateAPIView):
+    """Создать комнату"""
+    serializer_class = RoomSerializer
