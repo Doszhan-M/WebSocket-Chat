@@ -17,3 +17,6 @@ def room(request, room_name):
         'room_name': room_name
     })
 
+
+def photo(request):
+    return render(request, 'chat/photo.html')

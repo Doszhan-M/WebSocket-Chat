@@ -59,12 +59,27 @@ async function displayResult(profileData) {
         </p>
         <p><button type="button" class="j-btn">Изменить</button></p>
      </form>
+
   `;
-  resultNode.innerHTML = card;
-};
+  resultNode.insertAdjacentHTML('beforeend', card)
+
+  const img_attach = document.getElementById('img_attach')
+  if (user.avatar == null){
+    img_attach.src = "/static/img/256x256/256_1.png"
+  } else {
+  imgUrl = user.avatar.replace(host, '/')
+  img_attach.src = imgUrl
+}};
 
 displayResult(profileData)
 /*_______________________________________________________________________*/
+
+// обработчик события 'change' (происходит после выбора файла) 
+let image = false
+file_attach.addEventListener('change', () => {
+  console.log(file_attach.files[0])
+  image = true
+});
 
 // Функция изменения профиля, таймер нужен для ожидания построения дерева профиля
 setTimeout(() => {
@@ -72,23 +87,33 @@ setTimeout(() => {
 
   btn.addEventListener('click', () => {
     // Настраиваем запрос
-
+    const img_attach = document.getElementById('file_attach')
     const form = document.querySelector('.js-form');
-    body = JSON.stringify({
-      // name: "Иван",
-      name: form.name.value,
-      description: form.description.value,
-      location: form.location.value,
-      age: form.age.value
-    });
+
+    const formData = new FormData();
+    formData.append('name', form.name.value,);
+    formData.append('description', form.description.value,);
+    formData.append('location', form.location.value,);
+    formData.append('age', form.age.value,);
+    if (image) {
+      formData.append('avatar', img_attach.files[0]);
+      image = false
+    }
+    // body = JSON.stringify({
+    //   // name: "Иван",
+    //   name: form.name.value,
+    //   description: form.description.value,
+    //   location: form.location.value,
+    //   age: form.age.value
+    // });
 
     const options = {
       // метод PUT
       method: 'PUT',
       // Добавим тело запроса
-      body: body,
+      body: formData,
       headers: {
-        "Content-type": "application/json",
+        // "Content-type": "application/json",
         "X-CSRFToken": csrftoken
       }
     }
@@ -108,8 +133,9 @@ setTimeout(() => {
       alert1.classList.remove('toast_show');
       console.log(alert1.classList)
       console.log('delete')
+      displayResult(profileData)
     }, 3000)
 
   })
-}, 300)
+}, 1000)
 

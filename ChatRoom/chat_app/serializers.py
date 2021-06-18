@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, Room
+from .models import UserProfile, Room, Photo
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'name', 'description', 'location', 'age')
+        fields = ('user', 'name', 'description', 'location', 'age', 'avatar',)
 
 
 
@@ -17,3 +17,11 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ('room',)
+
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Photo
+        fields = ('img', 'text',)

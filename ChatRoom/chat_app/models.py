@@ -15,8 +15,9 @@ class UserProfile(models.Model):
     # age = models.IntegerField(default=lambda:choice(age_list))
     age = models.IntegerField(default=25)
     date_joined=models.DateTimeField(auto_now_add=True)
-    organizer=models.BooleanField(default=False)
-
+    avatar = models.ImageField(upload_to='images/', blank=True)
+    
+    
     def __str__(self):
         return self.user.username
 
@@ -28,3 +29,8 @@ class Room(models.Model):
     
     def __str__(self):
         return self.room
+
+
+class Photo(models.Model):
+    img = models.ImageField(upload_to='images/', blank=True)
+    text = models.CharField(max_length=254, blank=True)
