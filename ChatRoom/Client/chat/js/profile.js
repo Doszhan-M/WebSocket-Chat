@@ -25,11 +25,12 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
-host = 'http://127.0.0.1:8000/'
+const host = 'http://127.0.0.1:8000/'
 /*____________________________________________________________________________________________*/
 
 // Ищем нод для вставки результата запроса
 const resultNode = document.querySelector('.profile');
+const ava_image = document.getElementById('ava_image')
 
 // Функция запроса за данными пользователя
 const profileData = async () => {
@@ -46,13 +47,13 @@ async function displayResult(profileData) {
   let card = `
     <form class="js-form" method="PUT">
         <p><b>Ваше имя:</b><br>
-        <input name="name" type="text" value="${user.name}" size="40">
+        <input name="name" type="text" value="${user.name}" size="40" id="name" placeholder="Только латинские символы">
         </p>
         <p><b>Возраст:</b><br>
-        <input name="age" type="text" value="${user.age}" size="40">
+        <input name="age" type="text" value="${user.age}" size="40" required>
         </p>
         <p><b>Локация:</b><br>
-        <input name="location" type="text" value="${user.location}" size="40">
+        <input name="location" type="text" value="${user.location}" size="40" required>
         </p>
         <p><b>О себе:</b><br>
         <textarea name="description">${user.description}</textarea>
@@ -63,13 +64,8 @@ async function displayResult(profileData) {
   `;
   resultNode.insertAdjacentHTML('beforeend', card)
 
-  const img_attach = document.getElementById('img_attach')
-  if (user.avatar == null){
-    img_attach.src = "/static/img/256x256/256_1.png"
-  } else {
-  imgUrl = user.avatar.replace(host, '/')
-  img_attach.src = imgUrl
-}};
+  getAvaImage(user)
+};
 
 displayResult(profileData)
 /*_______________________________________________________________________*/
@@ -80,6 +76,16 @@ file_attach.addEventListener('change', () => {
   console.log(file_attach.files[0])
   image = true
 });
+
+// Поставить выбранный рисунок как аватарку
+function getAvaImage (user) {
+  if (user.avatar == null){
+    ava_image.src = "/static/img/256x256/256_1.png"
+  } else {
+  imgUrl = user.avatar.replace(host, '/')
+  console.log(ava_image)
+  ava_image.src = imgUrl
+  }}
 
 // Функция изменения профиля, таймер нужен для ожидания построения дерева профиля
 setTimeout(() => {
@@ -99,14 +105,7 @@ setTimeout(() => {
       formData.append('avatar', img_attach.files[0]);
       image = false
     }
-    // body = JSON.stringify({
-    //   // name: "Иван",
-    //   name: form.name.value,
-    //   description: form.description.value,
-    //   location: form.location.value,
-    //   age: form.age.value
-    // });
-
+    
     const options = {
       // метод PUT
       method: 'PUT',
@@ -122,6 +121,11 @@ setTimeout(() => {
       .then(response => response.json())
       .then(json => console.log(json))
 
+      setTimeout(
+      () => {profileData().then(data => {
+        getAvaImage (data)})}, 
+      1000)
+
     // Вывод сообщения
     const elem = document.querySelector('.title');
     let alert1 = document.createElement('div');
@@ -131,11 +135,17 @@ setTimeout(() => {
     
     setTimeout(() => {
       alert1.classList.remove('toast_show');
-      console.log(alert1.classList)
-      console.log('delete')
-      displayResult(profileData)
+      console.log('alert удален')
     }, 3000)
+
 
   })
 }, 1000)
 
+
+// Имя можно вводить только латиницей
+setTimeout(() => {
+  document.getElementById('name').addEventListener('keyup', function(){
+    this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');
+});
+},1000)

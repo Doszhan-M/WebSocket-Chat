@@ -12,7 +12,7 @@ def profile(request):
 
 
 @login_required
-def room(request, room_name):
+def room(request, room_name,):
     return render(request, 'chat/room.html', {
         'room_name': room_name
     })

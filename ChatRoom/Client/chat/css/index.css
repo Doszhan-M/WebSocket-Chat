@@ -139,12 +139,12 @@ footer {
 
     }
 
-    .ava input {
+    /* .ava input {
         margin-top: 12%;
 
-      }
+      } */
       
-    /* .ava input::-webkit-file-upload-button {
+    .ava input::-webkit-file-upload-button {
         visibility: hidden;
     }
     .ava input::before {
@@ -168,7 +168,7 @@ footer {
       }
       .ava input:active::before {
         background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-      }  */
+      } 
 
 .toast {
     display: none;

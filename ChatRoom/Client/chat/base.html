@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="{%static 'css/index.css' %}">
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+
+    {% block css %}{% endblock css %}
     
     <title>{% block head_title %}{% endblock head_title%}</title>
 
@@ -59,8 +59,7 @@
         </div>
     </footer>
 
-    {% block script %}
-    {% endblock script %}
+    {% block script %}{% endblock script %}
 
 </body>
 

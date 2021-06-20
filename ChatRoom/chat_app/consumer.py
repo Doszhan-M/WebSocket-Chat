@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-from django.contrib.auth.models import User
+from .models import UserProfile
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -28,13 +28,20 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         user = self.scope["user"]
-
+        username = UserProfile.objects.get(user=user).name
+        # Создать json для передачи данных на клиент
+        jsonStr = {
+                'name': username,
+                "message": message
+                }
+        message = json.dumps(jsonStr)
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': f'{user}: \n' + message,
+                'message': message,
+                # 'message': f'{username}: \n' + message,
             }
         )
 
