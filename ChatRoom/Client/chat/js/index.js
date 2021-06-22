@@ -1,29 +1,39 @@
+
 // Вывести список всех пользователей 
 const host = 'http://127.0.0.1:8000/'
 
 // Найти нод для вставки результата запроса
 const resultNode = document.querySelector('.users');
 
-// Функция запроса за данными пользователя, возвращает массив объектов с данными пользователей
+
+// Функция запроса за данными пользователя
 const profileData = async () => {
+    return await fetch(`${host}profile_data/`)
+      .then((response) => { return response.json(); })
+      .then((data) => { return data; })
+      .catch(() => { console.log('error') });
+  }
+
+
+// Функция запроса за данными пользователя, возвращает массив объектов с данными пользователей
+const allProfileData = async () => {
     return await fetch(`${host}all_users/`)
         .then((response) => { return response.json(); })
-        .then((data) => { 
-            console.log(typeof(data[1]));
-            return data; })
+        .then((data) => { return data; })
         .catch(() => { console.log('error') });
 }
 
 
 // Функция показа полученного результата
-async function displayResult(profileData) {
+async function displayResult(allProfileData) {
+    // let profile;
+    // await profileData().then(data => profile = data);
     let arr;
-    await profileData().then(data => arr = data);
+    await allProfileData().then(data => arr = data);
 
-    arr.forEach(user => {
-        console.log(user)    
-
+    await arr.forEach(user => {
         let card = document.createElement('div');
+        // if (profile.name != user.name) {
         card.innerHTML = `
         <div class="user_card">
         <div class="image">
@@ -35,13 +45,8 @@ async function displayResult(profileData) {
         </div><hr>
         `;
         resultNode.appendChild(card);   
+    // }
     });
-
-
-
-    setTimeout(() => {
-        const image = document.getElementById('ava');
-    }, 100)
 }
 
-displayResult(profileData)
+displayResult(allProfileData)

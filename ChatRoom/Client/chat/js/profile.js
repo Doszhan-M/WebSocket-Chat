@@ -1,22 +1,3 @@
-// let csrfcookie = function() {  // for django csrf protection
-//   let cookieValue = null,
-//       name = "csrftoken";
-//   if (document.cookie && document.cookie !== "") {
-//       let cookies = document.cookie.split(";");
-//       for (let i = 0; i < cookies.length; i++) {
-//           let cookie = cookies[i].trim();
-//           if (cookie.substring(0, name.length + 1) == (name + "=")) {
-//               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//               break;
-//           }
-//       }
-//   }
-//   return cookieValue;
-// };
-
-// var csrftoken = csrfcookie();
-/*____________________________________________________________________________________________*/
-
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -58,7 +39,7 @@ async function displayResult(profileData) {
         <p><b>О себе:</b><br>
         <textarea name="description">${user.description}</textarea>
         </p>
-        <p><button type="button" class="j-btn">Изменить</button></p>
+        <p><button type="button" class="bt j-btn">Изменить</button></p>
      </form>
 
   `;
@@ -83,7 +64,8 @@ function getAvaImage (user) {
     ava_image.src = "/static/img/256x256/256_1.png"
   } else {
   imgUrl = user.avatar.replace(host, '/')
-  console.log(ava_image)
+  // console.log(user.avatar)
+  console.log(user.avatar)
   ava_image.src = imgUrl
   }}
 

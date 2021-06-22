@@ -1,5 +1,6 @@
 from .models import Message, UserProfile, Photo, Room
-from .serializers import ProfileSerializer, RoomSerializer, PhotoSerializer, RoomSerializer, MessageSerializer
+from .serializers import ProfileSerializer, RoomSerializer, PhotoSerializer, RoomSerializer, \
+    MessageSerializer, GetRoomSerializer, RoomCreateSerializer, CommonRoomCreateSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 
@@ -28,15 +29,6 @@ class AllUsersApi(generics.ListAPIView):
     queryset = UserProfile.objects.all()
 
 
-class CreateRoomApi(generics.CreateAPIView):
-    """Создать комнату"""
-    serializer_class = RoomSerializer
-
-    def perform_create(self, serializer):
-        owner = UserProfile.objects.get(user=self.request.user)
-        serializer.save(owner=owner)
-
-
 class CompanionApi(generics.RetrieveUpdateAPIView):
     """получить профиль собеседника"""
     serializer_class = ProfileSerializer
@@ -47,14 +39,50 @@ class CompanionApi(generics.RetrieveUpdateAPIView):
         return user
 
 
-class RoomGetApi(generics.RetrieveUpdateAPIView):
+class CreateRoomApi(generics.CreateAPIView):
+    """Создать приватную комнату"""
+    serializer_class = RoomCreateSerializer
+
+    def perform_create(self, serializer):
+        owner = UserProfile.objects.get(user=self.request.user)
+        serializer.save(owner=owner)
+
+
+class RoomGetApi(generics.RetrieveUpdateDestroyAPIView):
     """Получить запрашиваюмую комнату"""
-    serializer_class = RoomSerializer
+    serializer_class = GetRoomSerializer
 
     def get_object(self):
         room = self.request.query_params.get('room')
-        room = Room.objects.get(room=room)
+        if len(Room.objects.filter(room=room)) > 0:
+            room = Room.objects.filter(room=room)[0]
+            print('room', room)
+        else:
+            room = 0
+            print('room', room)
         return room
+        
+
+class CommonRoomApi(generics.CreateAPIView):
+    """Создать общую комнату"""
+    serializer_class = CommonRoomCreateSerializer
+
+    def perform_create(self, serializer):
+        room = UserProfile.objects.get(user=self.request.user).name
+        owner = UserProfile.objects.get(user=self.request.user)
+        serializer.save(owner=owner, room=room)
+
+
+class AllRoomsGetApi(generics.ListAPIView):
+    """Получить все комнаты"""
+    serializer_class = RoomSerializer
+    queryset = Room.objects.filter(is_common=True)
+
+
+class DeleteMyRoomsApi(generics.ListAPIView):
+    """Получить все комнаты"""
+    serializer_class = RoomSerializer
+    queryset = Room.objects.filter(is_common=True)
 
 
 class MessageCreateApi(generics.CreateAPIView):
@@ -72,11 +100,12 @@ class MessageCreateApi(generics.CreateAPIView):
 class MessagesGetApi(generics.ListAPIView):
     """Создать сообщение"""
     serializer_class = MessageSerializer
-    queryset = Message.objects.all()
-
-
-
-
+    
+    # Получить сообщения от требуемой комнаты
+    def get_queryset(self):
+        room = self.request.query_params.get('room')
+        queryset = Message.objects.filter(room_blank=room).order_by('date')
+        return queryset
 
 # __________________________________________________________________________
 

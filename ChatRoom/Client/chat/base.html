@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="{%static 'css/index.css' %}">
-
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}">
     {% block css %}{% endblock css %}
     
     <title>{% block head_title %}{% endblock head_title%}</title>
@@ -26,7 +26,7 @@
                 <a href="{% url 'profile' %}">
                     <li>Личный кабинет</li>
                 </a>
-                <a href="#">
+                <a href="{% url 'all_rooms' %}">
                     <li>Комнаты</li>
                 </a>
                 {% if user.is_authenticated %}

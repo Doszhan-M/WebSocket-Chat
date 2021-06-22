@@ -7,7 +7,7 @@ from .random_vals import descriptions_list, locations_list, age_list
 # Представление пользователя
 class UserProfile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
-    name=models.CharField(max_length=255, unique=True, default='lambda:choice(locations_list)')
+    name=models.CharField(max_length=255, unique=True,)
     # description=models.TextField(blank=True, default=lambda:choice(descriptions_list))
     description=models.TextField(blank=True, default='lambda:choice(descriptions_list)')
     # location=models.CharField(max_length=30, default=lambda:choice(locations_list))
@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     # age = models.IntegerField(default=lambda:choice(age_list))
     age = models.IntegerField(default=25)
     date_joined=models.DateTimeField(auto_now_add=True)
-    avatar = models.ImageField(upload_to='images/', blank=True)
+    avatar = models.ImageField(upload_to='images/', blank=True, default='default.png')
     
     
     def __str__(self):
@@ -26,6 +26,7 @@ class UserProfile(models.Model):
 class Room(models.Model):
     room = models.CharField(max_length=255, unique=True, blank=True)
     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="room_members")
+    is_common = models.BooleanField(default=False)
     
     def __str__(self):
         return self.room

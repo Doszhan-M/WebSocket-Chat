@@ -130,6 +130,11 @@ footer {
         font-size: 16px;
     }
 
+    .bt:active { /* Добавляем псевдокласс :active */
+        border: 1px solid hsl(5, 40%, 70%); 
+        background-color: #587e59;
+
+        }
 .ava {
     display: flex;
     flex-direction: column;
@@ -263,3 +268,4 @@ footer {
     margin-top: 20%;
     color: #888;
 }
+

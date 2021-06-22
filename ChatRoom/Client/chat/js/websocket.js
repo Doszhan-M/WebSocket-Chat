@@ -5,16 +5,11 @@ const chatSocket = new WebSocket(
     + '/ws/chat_with/common/'
 );
 
-// Загрузить историю
-chatSocket.onopen  = function(e) {
-    const data = 'JSON.parse(e.data);'
-    document.querySelector('#chat-log').value += (data.message + '\n');
-};
-
 // Отправить сообщение в чат
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    document.querySelector('#chat-log').value += (data.message + '\n\n');
+    let newMessage = JSON.parse(data.message)
+    document.querySelector('#chat-log').value += (newMessage.name + ':\n' + newMessage.message + '\n\n');
 };
 
 // Закрыть соединение

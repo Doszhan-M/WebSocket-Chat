@@ -1,7 +1,7 @@
 /*Алгоритм входа в комнату:
 1. Сделать запрос на проверку комнаты со своим именем, если такая комната уже существует, то  
     название комнаты будет та же, иначе создаем новую комнату из адреса
-2. Открыть websocket с названием комнаты
+2. Открыть websocket с названием комнаты и сразу загрузить историю чата
 3. Получить и вывести данные собеседника*/
 
 
@@ -14,9 +14,7 @@ function getCookie(name) {
 }
 
 var csrftoken = getCookie('csrftoken');
-
 const host = 'http://127.0.0.1:8000/'
-
 
 // Пункт 1____________________________________________________________________________________________
 
@@ -28,20 +26,21 @@ const owner = JSON.parse(document.getElementById('room-name').textContent);
 const getRoom = async (name) => {
     return await fetch(`${host}room_get/?room=${name}`)
         .then((response) => { return response.json(); })
-        .then((data) => { return data;})
-        .catch(() => { console.log('такой комнаты нет') });
+        .then((data) => { return data; })
+        .catch(() => { console.log('------') 
+    });
 }
 
 // Функция получения своего имени
 const getMyName = async () => {
     return await fetch(`${host}profile_data/`)
-    .then((response) => { return response.json(); })
-    .then((data) => { return data; })
-    .catch(() => { console.log('error profile_data') });
+        .then((response) => { return response.json(); })
+        .then((data) => { return data; })
+        .catch(() => { console.log('error profile_data') });
 }
 
 // Функция создания комнаты чата в бд
-const createRoom = () => {
+const createRoom = (roomName) => {
     body = JSON.stringify({
         room: roomName,
         owner: 1
@@ -61,53 +60,128 @@ const createRoom = () => {
         .then(json => console.log(json))
         .catch(() => { console.log('такая комната уже существует') });
 }
-// getRoom()
 
-// Проверка
-async function checkRoom (getRoom) {
+// Функция проверки комнаты
+async function checkRoom(getRoom) {
     let myName;
-    await getMyName().then(data => myName = data.name)
-    console.log(myName, 'myName')
+    await getMyName().then(data => {myName = data.name})
+    
+    searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
+    searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
 
-    let room;
-    await getRoom(myName).then(data => room = data)
-    if (room != undefined) 
-        {
-        if (room.room == myName) {
-            console.log('Такая комната есть в бд')
-            roomName = `${myName}`
+    let roomsArray = [];
+    await getRoom(searchRoom1).then(data => {
+        roomsArray.push(data.room)
+    })
+    await getRoom(searchRoom2).then(data => {
+        roomsArray.push(data.room)
+    })
+    roomsArray = roomsArray.filter(item => item !== undefined)
+    console.log('roomsArray.length', roomsArray.length)
+
+    if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие комнаты
+        let myRoom
+        await getRoom(myName).then(data => myRoom = data)
+            console.log(myRoom.room == undefined)
+            if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
+                window.location.href = `${host}all_rooms/`;
             }
-    } else {
-        console.log('Создать новую комнату')
-        createRoom()
+    } else { // Если в базе нет подходящей комнаты, то создать
+        if (roomsArray.length == 0) {
+            console.log('Создать комнату')
+            createRoom(searchRoom1)
+            roomName = searchRoom1}
+        if (roomsArray.length > 0) { // если есть такая комната, то зайти в нее
+            console.log('roomsArray[0]', roomsArray[0])
+            roomName = roomsArray[0]
+        }
     }
 }
-
-// Выполнить
-checkRoom(getRoom)
 
 
 // Пункт 2____________________________________________________________________________________________
 
-setTimeout(() => {
-const chatSocket = new WebSocket(
-    'ws://'
-    + window.location.host
-    + '/ws/chat_with/'
-    + roomName
-    + '/'
-);
-console.log('chatSocket', chatSocket)
+// Функция создания сообщения в бд
+async function createMessage(message, room) {
+    let author;
+    await getMyName().then(data => author = data.name)
 
-chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    // Распарсить полученное сообщение
-    let newMessageContent = JSON.parse(data.message)
-    // Создать новый div и добавить туда класс
-    let div = document.createElement('div');
-    div.classList.add('chat_log')
-    // Собрать html сообщения и вставить его в div
-    message = `
+    body = JSON.stringify({
+        author: author,
+        message: message,
+        room: 1,
+        room_blank: room
+    });
+    const options = {
+        method: 'POST',
+        // Добавим тело запроса
+        body: body,
+        headers: {
+            "Content-type": "application/json",
+            "X-CSRFToken": csrftoken
+        }
+    }
+    // Делаем post запрос
+    await fetch('http://127.0.0.1:8000/message_create/', options)
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch(() => { console.log('не удалось создать сообщение') });
+}
+
+function startWebsocket() {
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat_with/'
+        + roomName
+        + '/'
+    );
+    console.log('chatSocket', chatSocket)
+
+    // Поведение при открытии соединения
+    chatSocket.onopen = function (e) {
+        // Получить все сообщения данной комнаты из бд и показать их в шаблоне
+        const getMessages = (roomName) => {
+            let messages;
+            fetch(`${host}message_get/?room=${roomName}`)
+                .then((response) => { return response.json(); })
+                .then((data) => {
+                    messages = data;
+                    messages.forEach(element => {
+                        let newMessageContent = element
+                        // Создать новый div и добавить туда класс
+                        let div = document.createElement('div');
+                        div.classList.add('chat_log')
+                        // Собрать html сообщения и вставить его в div
+                        message = `
+            <div class="name">
+                <p>${newMessageContent.author}</p>
+            </div>
+            <div class="new_message">
+                <p>${newMessageContent.message}</p>
+            </div>
+            `
+                        div.innerHTML = message
+                        // Вставить готовую сборку в поле чата
+                        const chat = document.querySelector('.chat')
+                        chat.appendChild(div)
+                    });
+                })
+                .catch(() => { console.log('сообщении нет') })
+        }
+        getMessages(roomName)
+    }
+
+    // Поведение при входящем сообщении
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        // Распарсить полученное сообщение
+        let newMessageContent = JSON.parse(data.message)
+        // Создать новый div и добавить туда класс
+        let div = document.createElement('div');
+        div.classList.add('chat_log')
+        // Собрать html сообщения и вставить его в div
+        message = `
     <div class="name">
         <p>${newMessageContent.name}</p>
     </div>
@@ -115,34 +189,40 @@ chatSocket.onmessage = function (e) {
         <p>${newMessageContent.message}</p>
     </div>
     `
-    div.innerHTML = message
-    // Вставить готовую сборку в поле чата
-    const chat = document.querySelector('.chat')
-    chat.appendChild(div)
-    // document.querySelector('#new_message').textContent += (data.message);
-};
+        div.innerHTML = message
+        // Вставить готовую сборку в поле чата
+        const chat = document.querySelector('.chat')
+        chat.appendChild(div)
+        // Создать копию сообщения в бд
+    };
 
-chatSocket.onclose = function (e) {
-    console.error('Chat socket closed unexpectedly');
-};
 
-document.querySelector('.message').focus();
-document.querySelector('.message').onkeyup = function (e) {
-    if (e.keyCode === 13) {  // enter, return
-        document.querySelector('.jbtn').click();
-    }
-};
+    // Поведение при закрытии соединения
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
 
-document.querySelector('.jbtn').onclick = function (e) {
-    const messageInputDom = document.querySelector('.message');
-    const message = messageInputDom.value;
-    chatSocket.send(JSON.stringify({
-        'message': message
-    }));
-    messageInputDom.value = '';
-};
-}, 1000)
+    document.querySelector('.message').focus();
+    document.querySelector('.message').onkeyup = function (e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('.jbtn').click();
+        }
+    };
 
+    // отправить сообщение на сервер
+
+    document.querySelector('.jbtn').onclick = function (e) {
+        const messageInput = document.querySelector('.message');
+        const message = messageInput.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+
+        createMessage(messageInput.value, roomName)
+
+        messageInput.value = '';
+    };
+}
 
 // Пункт 3____________________________________________________________________________________________
 
@@ -175,34 +255,11 @@ async function displayResult() {
     document.getElementById("description").textContent = user.description
 
 }
-// Выполнить
-displayResult()
 
-
-// Пункт ____________________________________________________________________________________________
-
-// Функция создания сообщения в бд
-const createMessage = () => {
-    body = JSON.stringify({
-        author: 'lambda',
-        message: 'adawdwadada',
-        room: 1, 
-        room_blank: '1111111111'
-    });
-    const options = {
-        method: 'POST',
-        // Добавим тело запроса
-        body: body,
-        headers: {
-            "Content-type": "application/json",
-            "X-CSRFToken": csrftoken
-        }
-    }
-    // Делаем post запрос
-    fetch('http://127.0.0.1:8000/message_create/', options)
-        .then(response => response.json())
-        .then(json => console.log(json))
-        .catch(() => { console.log('не удалось создать сообщение') });
+async function start() {
+    await checkRoom(getRoom) // Выполнить
+    await displayResult()
+    await startWebsocket()
 }
 
-createMessage()
+start()
