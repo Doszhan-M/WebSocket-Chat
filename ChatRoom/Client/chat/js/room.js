@@ -241,6 +241,13 @@ async function displayResult() {
     document.getElementById("age").textContent = `${user.age} лет`
     document.getElementById("location").textContent = user.location
     document.getElementById("description").textContent = user.description
+    let ava;
+    if (user.avatar) {
+        ava = user.avatar
+    } else {
+        ava = '/static/img/256x256/256_1.png'
+    }
+    document.getElementById("ava").src = ava
 }
 
 // Собрать все в одну функцию

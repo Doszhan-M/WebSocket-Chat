@@ -125,7 +125,6 @@ window.addEventListener('load', () => {
     function createRoom () {
       body = JSON.stringify({
           room: 'roomName', //название комнаты сервер обработает сам, любое значение
-          owner: 1, // владельца комнаты сервер обработает сам, любое значение
           is_common: true // не приватная комната
       });
       const options = {

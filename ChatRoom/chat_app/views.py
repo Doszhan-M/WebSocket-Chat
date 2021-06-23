@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from allauth.account.forms import LoginForm
 
 
 def index(request):

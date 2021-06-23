@@ -11,29 +11,28 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('user', 'name', 'description', 'location', 'age', 'avatar',)
 
 
-class RoomSerializer(serializers.ModelSerializer):    
-    owner = serializers.SlugRelatedField(slug_field='name', read_only=True)
+class AllRoomSerializer(serializers.ModelSerializer):    
     my_field  = serializers.SerializerMethodField()
 
     def get_my_field(self, obj):
-        owner = str(obj.owner)
+        owner = str(obj.room)
         my_field = 'http://127.0.0.1:8000/media/' + str(UserProfile.objects.get(name=owner).avatar)
         return my_field
 
     class Meta:
         model = Room
-        fields = ('room', 'owner', 'my_field',)
+        fields = ('room', 'my_field',)
 
 
 class RoomCreateSerializer(serializers.ModelSerializer):    
     class Meta:
         model = Room
-        fields = ('room', 'owner',)
+        fields = ('room',)
 
 class CommonRoomCreateSerializer(serializers.ModelSerializer):    
     class Meta:
         model = Room
-        fields = ('room', 'owner', 'is_common')
+        fields = ('room','is_common')
 
 
 class GetRoomSerializer(serializers.ModelSerializer):    

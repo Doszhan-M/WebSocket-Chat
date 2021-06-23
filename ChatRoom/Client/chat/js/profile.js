@@ -44,11 +44,11 @@ async function displayResult(profileData) {
   await profileData().then(data => user = data);
   let card = `
     <form class="js-form" method="PUT">
-        <p><b>Ваше имя:</b><br>
-        <input name="name" type="text" value="${user.name}" size="40" id="name" placeholder="Только латинские символы">
+        <p><b>Ваш логин:</b><br>
+        <input name="name" readonly="readonly" type="text" value="${user.name}" size="40" id="name">
         </p>
         <p><b>Возраст:</b><br>
-        <input name="age" type="text" value="${user.age}" size="40" required>
+        <input name="age" id="age" type="text" value="${user.age}" size="40" required placeholder="Только цифры">
         </p>
         <p><b>Локация:</b><br>
         <input name="location" type="text" value="${user.location}" size="40" required>
@@ -65,6 +65,10 @@ async function displayResult(profileData) {
   // Поле имени можно вводить только латиницей
   document.getElementById('name').addEventListener('keyup', function(){
     this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');});
+  
+  // Поле имени можно вводить только латиницей
+  document.getElementById('age').addEventListener('keyup', function(){
+    this.value = this.value.replace(/[^0-9+]/g, '');});
 
   //Получить аватарку
   getAvaImage()

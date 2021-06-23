@@ -10,10 +10,9 @@ urlpatterns = [
     path('', index, name='index'),
     path('profile/', profile, name='profile'),
     path('chat_with/<str:room_name>/', room, name='room'),
+    path('all_rooms/', all_rooms, name='all_rooms',),
     path('login/', LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
-    path('all_rooms/', all_rooms, name='all_rooms',),
-    path('photo/', photo, name='photo',),
 
     # API запросы
     path('profile_data/', ProfileViewApi.as_view(), name='profile_data'),
@@ -26,8 +25,9 @@ urlpatterns = [
     path('create_common_room/', CommonRoomApi.as_view(), name='create_common_room'),
     path('message_create/', MessageCreateApi.as_view(), name='message_create'),
     path('message_get/', MessagesGetApi.as_view(), name='message_get'),
-
+    
+    # тестовые url
+    path('photo/', photo, name='photo',),
     path('photo_create/', PhotoCreateApi.as_view(), name='photo_create'),
     path('photo_get/', PhotoGetApi.as_view(), name='photo_get'),
-
 ]

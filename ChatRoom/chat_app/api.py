@@ -1,5 +1,5 @@
 from .models import Message, UserProfile, Photo, Room
-from .serializers import ProfileSerializer, RoomSerializer, PhotoSerializer, RoomSerializer, \
+from .serializers import ProfileSerializer, AllRoomSerializer, PhotoSerializer,\
     MessageSerializer, GetRoomSerializer, RoomCreateSerializer, CommonRoomCreateSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -10,6 +10,8 @@ class ProfileViewApi(generics.RetrieveAPIView):
     serializer_class = ProfileSerializer
 
     def get_object(self):
+        print('UserProfile.objects.all()',UserProfile.objects.all()[0].pk)
+
         user = UserProfile.objects.get(user=self.request.user)
         return user
 
@@ -43,9 +45,9 @@ class CreateRoomApi(generics.CreateAPIView):
     """Создать приватную комнату"""
     serializer_class = RoomCreateSerializer
 
-    def perform_create(self, serializer):
-        owner = UserProfile.objects.get(user=self.request.user)
-        serializer.save(owner=owner)
+    # def perform_create(self, serializer):
+    #     owner = UserProfile.objects.get(user=self.request.user)
+    #     serializer.save(owner=owner)
 
 
 class RoomGetApi(generics.RetrieveUpdateDestroyAPIView):
@@ -69,19 +71,18 @@ class CommonRoomApi(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         room = UserProfile.objects.get(user=self.request.user).name
-        owner = UserProfile.objects.get(user=self.request.user)
-        serializer.save(owner=owner, room=room)
+        serializer.save(room=room)
 
 
 class AllRoomsGetApi(generics.ListAPIView):
     """Получить все комнаты"""
-    serializer_class = RoomSerializer
+    serializer_class = AllRoomSerializer
     queryset = Room.objects.filter(is_common=True)
 
 
 class DeleteMyRoomsApi(generics.ListAPIView):
     """Получить все комнаты"""
-    serializer_class = RoomSerializer
+    serializer_class = AllRoomSerializer
     queryset = Room.objects.filter(is_common=True)
 
 

@@ -2,7 +2,8 @@
     display: flex;
     width: 90%;
     margin-bottom: 5%;
-    margin-left: -5%;
+    /* margin-left: -5%; */
+    justify-content: space-between;
 }
 
 .chat_user {
@@ -10,17 +11,34 @@
     flex-direction: column;
     align-items: center;
     color: rgb(95, 112, 106);    
+    margin-left: -2%;
 }
 
     .chat_user p {
         margin-top: 2%;
-        width: 50%;
+        width: 60%;
         text-align: center;
+    }
+
+    .chat_user h4 {
+        margin-top: 5%;
     }
 
     .self {
         font-weight: bold ;
-        margin-bottom: -2%;
+        /* margin-bottom: -2%; */
+        margin-top: 7%;
+    }
+
+    .image {
+        margin: 5%;
+    }
+
+    .description {
+        width: 70%;
+        background-color: rgb(220, 236, 193);
+        padding: 2%;
+        border-radius: 3%;
     }
 
 .chat_box {
