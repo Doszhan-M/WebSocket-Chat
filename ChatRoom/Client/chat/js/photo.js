@@ -1,4 +1,4 @@
-
+// тестовый файл, не участвует в проекте
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);

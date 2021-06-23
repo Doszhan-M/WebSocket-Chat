@@ -6,7 +6,6 @@
 
 
 // Получить токен и объявить хост________________________________________________________________
-
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -18,11 +17,11 @@ const host = 'http://127.0.0.1:8000/'
 
 // Пункт 1____________________________________________________________________________________________
 
-// Название и владелец комнаты из адреса
+// Название и владелец комнаты присвоить из URL
 let roomName = JSON.parse(document.getElementById('room-name').textContent);
 const owner = JSON.parse(document.getElementById('room-name').textContent);
 
-// Функция проверки комнаты
+// Функция поиска комнаты в БД
 const getRoom = async (name) => {
     return await fetch(`${host}room_get/?room=${name}`)
         .then((response) => { return response.json(); })
@@ -31,7 +30,7 @@ const getRoom = async (name) => {
     });
 }
 
-// Функция получения своего имени
+// Функция получения своего своего профиля для имени
 const getMyName = async () => {
     return await fetch(`${host}profile_data/`)
         .then((response) => { return response.json(); })
@@ -39,7 +38,7 @@ const getMyName = async () => {
         .catch(() => { console.log('error profile_data') });
 }
 
-// Функция создания комнаты чата в бд
+// Функция создания приватной комнаты чата в бд
 const createRoom = (roomName) => {
     body = JSON.stringify({
         room: roomName,
@@ -54,7 +53,7 @@ const createRoom = (roomName) => {
             "X-CSRFToken": csrftoken
         }
     }
-    // Делаем post запрос
+    // Отправить post запрос
     fetch('http://127.0.0.1:8000/create_room/', options)
         .then(response => response.json())
         .then(json => console.log(json))
@@ -79,14 +78,13 @@ async function checkRoom(getRoom) {
     roomsArray = roomsArray.filter(item => item !== undefined)
     console.log('roomsArray.length', roomsArray.length)
 
-    if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие комнаты
+    if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие общественной комнаты
         let myRoom
         await getRoom(myName).then(data => myRoom = data)
-            console.log(myRoom.room == undefined)
             if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
                 window.location.href = `${host}all_rooms/`;
             }
-    } else { // Если в базе нет подходящей комнаты, то создать
+    } else { // Если в базе нет подходящей комнаты, то создать и передать ее для websocket
         if (roomsArray.length == 0) {
             console.log('Создать комнату')
             createRoom(searchRoom1)
@@ -98,10 +96,9 @@ async function checkRoom(getRoom) {
     }
 }
 
-
 // Пункт 2____________________________________________________________________________________________
 
-// Функция создания сообщения в бд
+// Функция создания сообщения в БД
 async function createMessage(message, room) {
     let author;
     await getMyName().then(data => author = data.name)
@@ -121,13 +118,14 @@ async function createMessage(message, room) {
             "X-CSRFToken": csrftoken
         }
     }
-    // Делаем post запрос
+    // Сделать post запрос
     await fetch('http://127.0.0.1:8000/message_create/', options)
         .then(response => response.json())
         .then(json => console.log(json))
         .catch(() => { console.log('не удалось создать сообщение') });
 }
 
+// Функция открытия соединения websocket
 function startWebsocket() {
     const chatSocket = new WebSocket(
         'ws://'
@@ -140,7 +138,7 @@ function startWebsocket() {
 
     // Поведение при открытии соединения
     chatSocket.onopen = function (e) {
-        // Получить все сообщения данной комнаты из бд и показать их в шаблоне
+        // Получить все сообщения данной комнаты из бд и показать их как историю
         const getMessages = (roomName) => {
             let messages;
             fetch(`${host}message_get/?room=${roomName}`)
@@ -154,13 +152,13 @@ function startWebsocket() {
                         div.classList.add('chat_log')
                         // Собрать html сообщения и вставить его в div
                         message = `
-            <div class="name">
-                <p>${newMessageContent.author}</p>
-            </div>
-            <div class="new_message">
-                <p>${newMessageContent.message}</p>
-            </div>
-            `
+                                <div class="name">
+                                    <p>${newMessageContent.author}</p>
+                                </div>
+                                <div class="new_message">
+                                    <p>${newMessageContent.message}</p>
+                                </div>
+                                `
                         div.innerHTML = message
                         // Вставить готовую сборку в поле чата
                         const chat = document.querySelector('.chat')
@@ -182,18 +180,17 @@ function startWebsocket() {
         div.classList.add('chat_log')
         // Собрать html сообщения и вставить его в div
         message = `
-    <div class="name">
-        <p>${newMessageContent.name}</p>
-    </div>
-    <div class="new_message">
-        <p>${newMessageContent.message}</p>
-    </div>
-    `
+            <div class="name">
+                <p>${newMessageContent.name}</p>
+            </div>
+            <div class="new_message">
+                <p>${newMessageContent.message}</p>
+            </div>
+            `
         div.innerHTML = message
         // Вставить готовую сборку в поле чата
         const chat = document.querySelector('.chat')
         chat.appendChild(div)
-        // Создать копию сообщения в бд
     };
 
 
@@ -202,6 +199,7 @@ function startWebsocket() {
         console.error('Chat socket closed unexpectedly');
     };
 
+    // Enter работает как отправить сообщение в чат
     document.querySelector('.message').focus();
     document.querySelector('.message').onkeyup = function (e) {
         if (e.keyCode === 13) {  // enter, return
@@ -210,17 +208,15 @@ function startWebsocket() {
     };
 
     // отправить сообщение на сервер
-
     document.querySelector('.jbtn').onclick = function (e) {
         const messageInput = document.querySelector('.message');
         const message = messageInput.value;
         chatSocket.send(JSON.stringify({
             'message': message
         }));
-
+        // Создать копию сообщения в бд
         createMessage(messageInput.value, roomName)
-
-        messageInput.value = '';
+        messageInput.value = ''; // очистить поле
     };
 }
 
@@ -229,37 +225,31 @@ function startWebsocket() {
 // Функция запроса профиля собеседника
 const profileData = async () => {
     const currentLocation = window.location.pathname;
-    const companion = currentLocation.split('/')[2]
+    const companion = currentLocation.split('/')[2] //имя собеседника есть в URL
     return await fetch(`${host}get_user/?companion=${companion}`)
         .then((response) => { return response.json(); })
         .then((data) => { return data; })
         .catch(() => { console.log('error') });
 }
 
-// Отправить в шаблон данные собеседника
+// Отобразить данные собеседника
 async function displayResult() {
     let user;
     await profileData().then(data => user = data);
-    const userNode = document.querySelector('.chat_user')
-    let card = `
-    <p><h3>Чат с пользователем:</h3></p>
-    <p><img src="/static/img/256x256/256_1.png" alt="ava" width="200"></p>
-    <p><h3>${user.name}</h3></p>
-    <p><h4>${user.age} года</h4></p>
-    <p>${user.location}</p>
-    <p>${user.description}</p>
-    `
+
     document.getElementById("name").textContent = user.name
     document.getElementById("age").textContent = `${user.age} лет`
     document.getElementById("location").textContent = user.location
     document.getElementById("description").textContent = user.description
-
 }
 
-async function start() {
-    await checkRoom(getRoom) // Выполнить
-    await displayResult()
-    await startWebsocket()
-}
+// Собрать все в одну функцию
+window.addEventListener('load', () => { 
+    async function start() {
+        await checkRoom(getRoom) 
+        await displayResult()
+        await startWebsocket()
+        }
 
-start()
+    start()// Выполнить    
+})

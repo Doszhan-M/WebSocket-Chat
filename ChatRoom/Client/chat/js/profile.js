@@ -1,3 +1,4 @@
+// Получить токен и объявить переменные________________________________________________________________
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -7,11 +8,15 @@ function getCookie(name) {
 var csrftoken = getCookie('csrftoken');
 
 const host = 'http://127.0.0.1:8000/'
-/*____________________________________________________________________________________________*/
-
-// Ищем нод для вставки результата запроса
 const resultNode = document.querySelector('.profile');
 const ava_image = document.getElementById('ava_image')
+let image = false // флаг нужен для формирования formData
+
+// обработчик события 'change' (происходит после выбора файла) 
+file_attach.addEventListener('change', () => {
+  console.log(file_attach.files[0])
+  image = true 
+});
 
 // Функция запроса за данными пользователя
 const profileData = async () => {
@@ -21,7 +26,19 @@ const profileData = async () => {
     .catch(() => { console.log('error') });
 }
 
-// Функция показа полученного результата
+// Функция показа аватарки пользователя
+async function getAvaImage () {
+  let profile
+  await profileData().then(data => profile = data);
+  if (profile.avatar == null){
+    ava_image.src = "/static/img/256x256/256_1.png"
+  } else {
+  imgUrl = profile.avatar.replace(host, '/')
+  ava_image.src = imgUrl
+  }
+}
+
+// Функция показа данных пользователя
 async function displayResult(profileData) {
   let user;
   await profileData().then(data => user = data);
@@ -45,39 +62,20 @@ async function displayResult(profileData) {
   `;
   resultNode.insertAdjacentHTML('beforeend', card)
 
-  getAvaImage(user)
+  // Поле имени можно вводить только латиницей
+  document.getElementById('name').addEventListener('keyup', function(){
+    this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');});
+
+  //Получить аватарку
+  getAvaImage()
 };
 
-displayResult(profileData)
-/*_______________________________________________________________________*/
-
-// обработчик события 'change' (происходит после выбора файла) 
-let image = false
-file_attach.addEventListener('change', () => {
-  console.log(file_attach.files[0])
-  image = true
-});
-
-// Поставить выбранный рисунок как аватарку
-function getAvaImage (user) {
-  if (user.avatar == null){
-    ava_image.src = "/static/img/256x256/256_1.png"
-  } else {
-  imgUrl = user.avatar.replace(host, '/')
-  // console.log(user.avatar)
-  console.log(user.avatar)
-  ava_image.src = imgUrl
-  }}
-
-// Функция изменения профиля, таймер нужен для ожидания построения дерева профиля
-setTimeout(() => {
-  const btn = document.querySelector('.j-btn');
-
-  btn.addEventListener('click', () => {
-    // Настраиваем запрос
+// Функция отправки измененных данных профиля
+async function sendNewData() {
     const img_attach = document.getElementById('file_attach')
     const form = document.querySelector('.js-form');
 
+    // Настроить запрос
     const formData = new FormData();
     formData.append('name', form.name.value,);
     formData.append('description', form.description.value,);
@@ -87,27 +85,30 @@ setTimeout(() => {
       formData.append('avatar', img_attach.files[0]);
       image = false
     }
-    
+
     const options = {
-      // метод PUT
       method: 'PUT',
-      // Добавим тело запроса
       body: formData,
       headers: {
-        // "Content-type": "application/json",
         "X-CSRFToken": csrftoken
       }
     }
-    // Делаем запрос за данными
-    fetch('http://127.0.0.1:8000/profile_update/', options)
+    // Сделать запрос
+    await fetch('http://127.0.0.1:8000/profile_update/', options)
       .then(response => response.json())
       .then(json => console.log(json))
 
-      setTimeout(
-      () => {profileData().then(data => {
-        getAvaImage (data)})}, 
-      1000)
+    // Обновить аватарку
+    getAvaImage()
+}
 
+// обработчик на кнопку 'изменить'
+async function editProfile() {
+  const btn = document.querySelector('.j-btn');
+
+  btn.addEventListener('click', () => {
+    sendNewData() // отправить данные
+    
     // Вывод сообщения
     const elem = document.querySelector('.title');
     let alert1 = document.createElement('div');
@@ -115,19 +116,18 @@ setTimeout(() => {
     alert1.innerHTML = `<h3>Успешно сохранено</h3>`;
     elem.after(alert1)
     
-    setTimeout(() => {
+    setTimeout(() => { // удалить сообщение
       alert1.classList.remove('toast_show');
-      console.log('alert удален')
-    }, 3000)
-
-
+    }, 4000)
   })
-}, 1000)
+}
 
+// Собрать все в одну функцию
+window.addEventListener('load', () => { 
+    async function start() {
+      await displayResult(profileData)
+      await editProfile()
+      }
 
-// Имя можно вводить только латиницей
-setTimeout(() => {
-  document.getElementById('name').addEventListener('keyup', function(){
-    this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');
-});
-},1000)
+    start()// Выполнить    
+})
