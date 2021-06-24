@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import include
 from allauth.account.views import LoginView, LogoutView
-from chat_app.views import index, room, profile, photo, all_rooms
+from chat_app.views import index, room, profile, photo, all_rooms, common_room
 from chat_app.api import ProfileViewApi, ProfileUpdateApi, PhotoCreateApi, PhotoGetApi, AllUsersApi, \
     CreateRoomApi, CompanionApi, RoomGetApi, MessageCreateApi, MessagesGetApi, AllRoomsGetApi, CommonRoomApi
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('profile/', profile, name='profile'),
     path('chat_with/<str:room_name>/', room, name='room'),
+    path('common_room/<str:room_name>/', common_room, name='room'),
     path('all_rooms/', all_rooms, name='all_rooms',),
     path('login/', LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),

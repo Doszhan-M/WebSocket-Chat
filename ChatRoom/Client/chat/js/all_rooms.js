@@ -66,7 +66,7 @@ window.addEventListener('load', () => {
               <h2>${room.room}</h2>
           </div>
           <div class="btns">
-          <button class="bt enter" type="submit"><a href="${host}chat_with/${room.room}/">Войти</a></button>
+          <button class="bt enter" type="submit"><a href="${host}common_room/${room.room}/">Войти</a></button>
           </div>
         ` 
         // если карта принадлежит юзеру, то вставить кнопку удаления     

@@ -26,7 +26,7 @@ class ProfileUpdateApi(generics.RetrieveUpdateAPIView):
 
 
 class AllUsersApi(generics.ListAPIView):
-    """Достать все профили"""
+    """получить все профили"""
     serializer_class = ProfileSerializer
     queryset = UserProfile.objects.all()
 
@@ -80,12 +80,6 @@ class AllRoomsGetApi(generics.ListAPIView):
     queryset = Room.objects.filter(is_common=True)
 
 
-class DeleteMyRoomsApi(generics.ListAPIView):
-    """Получить все комнаты"""
-    serializer_class = AllRoomSerializer
-    queryset = Room.objects.filter(is_common=True)
-
-
 class MessageCreateApi(generics.CreateAPIView):
     """Создать сообщение"""
     serializer_class = MessageSerializer
@@ -94,22 +88,20 @@ class MessageCreateApi(generics.CreateAPIView):
         # получуть данные из post запроса
         param = serializer.validated_data['room_blank']
         room = Room.objects.get(room=param)
-        print('room', room)
         serializer.save(room=room)
 
 
 class MessagesGetApi(generics.ListAPIView):
-    """Создать сообщение"""
+    """Получить сообщения от указанной комнаты"""
     serializer_class = MessageSerializer
-    
-    # Получить сообщения от требуемой комнаты
+
     def get_queryset(self):
         room = self.request.query_params.get('room')
         queryset = Message.objects.filter(room_blank=room).order_by('date')
         return queryset
 
-# __________________________________________________________________________
 
+# __________________________________________________________________________
 class PhotoCreateApi(generics.CreateAPIView):
     """Создать картинку"""
     serializer_class = PhotoSerializer

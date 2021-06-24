@@ -27,12 +27,18 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        user = self.scope["user"]
-        username = UserProfile.objects.get(user=user).name
+        fake_user = text_data_json['fake_user']
+        
+        try:
+            user = self.scope["user"]
+            username = UserProfile.objects.get(user=user).name
+        except TypeError:
+            username = 'AnonymUser'
         # Создать json для передачи данных на клиент
         jsonStr = {
                 'name': username,
-                "message": message
+                "message": message,
+                'fake_user': fake_user
                 }
         message = json.dumps(jsonStr)
         # Send message to room group
@@ -41,7 +47,6 @@ class ChatConsumer(WebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                # 'message': f'{username}: \n' + message,
             }
         )
 
@@ -51,5 +56,5 @@ class ChatConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
-            'message': message
+            'message': message,
         }))

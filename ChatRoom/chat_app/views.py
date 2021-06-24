@@ -24,5 +24,13 @@ def all_rooms(request,):
     return render(request, 'chat/all_rooms.html',)
 
 
+@login_required
+def common_room(request, room_name,):
+    return render(request, 'chat/common_room.html',{
+        'room_name': room_name
+    })
+
+
+# test___________________________________________________________
 def photo(request):
     return render(request, 'chat/photo.html')

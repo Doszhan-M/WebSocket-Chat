@@ -100,10 +100,22 @@ async function sendNewData() {
     // Сделать запрос
     await fetch('http://127.0.0.1:8000/profile_update/', options)
       .then(response => response.json())
-      .then(json => console.log(json))
+      .then(json => {
+        console.log('json', json)  
+        // Вывод уведомления после успешного запроса
+        const elem = document.querySelector('.title');
+        let alert1 = document.createElement('div');
+        alert1.classList.add('toast', 'toast_show')
+        alert1.innerHTML = `<h3>Успешно сохранено</h3>`;
+        elem.after(alert1)
+        
+        setTimeout(() => { // удалить сообщение
+          alert1.classList.remove('toast_show');
+        }, 4000)
+      })
+      .catch(() => { console.error(response)});
 
-    // Обновить аватарку
-    getAvaImage()
+    getAvaImage() // Обновить аватарку
 }
 
 // обработчик на кнопку 'изменить'
@@ -112,17 +124,8 @@ async function editProfile() {
 
   btn.addEventListener('click', () => {
     sendNewData() // отправить данные
-    
-    // Вывод сообщения
-    const elem = document.querySelector('.title');
-    let alert1 = document.createElement('div');
-    alert1.classList.add('toast', 'toast_show')
-    alert1.innerHTML = `<h3>Успешно сохранено</h3>`;
-    elem.after(alert1)
-    
-    setTimeout(() => { // удалить сообщение
-      alert1.classList.remove('toast_show');
-    }, 4000)
+      
+
   })
 }
 

@@ -60,41 +60,41 @@ const createRoom = (roomName) => {
         .catch(() => { console.log('такая комната уже существует') });
 }
 
-// Функция проверки комнаты
-async function checkRoom(getRoom) {
-    let myName;
-    await getMyName().then(data => {myName = data.name})
+// // Функция проверки комнаты
+// async function checkRoom(getRoom) {
+//     let myName;
+//     await getMyName().then(data => {myName = data.name})
     
-    searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
-    searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
+//     searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
+//     searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
 
-    let roomsArray = [];
-    await getRoom(searchRoom1).then(data => {
-        roomsArray.push(data.room)
-    })
-    await getRoom(searchRoom2).then(data => {
-        roomsArray.push(data.room)
-    })
-    roomsArray = roomsArray.filter(item => item !== undefined)
-    console.log('roomsArray.length', roomsArray.length)
+//     let roomsArray = [];
+//     await getRoom(searchRoom1).then(data => {
+//         roomsArray.push(data.room)
+//     })
+//     await getRoom(searchRoom2).then(data => {
+//         roomsArray.push(data.room)
+//     })
+//     roomsArray = roomsArray.filter(item => item !== undefined)
+//     console.log('roomsArray.length', roomsArray.length)
 
-    if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие общественной комнаты
-        let myRoom
-        await getRoom(myName).then(data => myRoom = data)
-            if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
-                window.location.href = `${host}all_rooms/`;
-            }
-    } else { // Если в базе нет подходящей комнаты, то создать и передать ее для websocket
-        if (roomsArray.length == 0) {
-            console.log('Создать комнату')
-            createRoom(searchRoom1)
-            roomName = searchRoom1}
-        if (roomsArray.length > 0) { // если есть такая комната, то зайти в нее
-            console.log('roomsArray[0]', roomsArray[0])
-            roomName = roomsArray[0]
-        }
-    }
-}
+//     if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие общественной комнаты
+//         let myRoom
+//         await getRoom(myName).then(data => myRoom = data)
+//             if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
+//                 window.location.href = `${host}all_rooms/`;
+//             }
+//     } else { // Если в базе нет подходящей комнаты, то создать и передать ее для websocket
+//         if (roomsArray.length == 0) {
+//             console.log('Создать комнату')
+//             createRoom(searchRoom1)
+//             roomName = searchRoom1}
+//         if (roomsArray.length > 0) { // если есть такая комната, то зайти в нее
+//             console.log('roomsArray[0]', roomsArray[0])
+//             roomName = roomsArray[0]
+//         }
+//     }
+// }
 
 // Пункт 2____________________________________________________________________________________________
 
@@ -106,7 +106,7 @@ async function createMessage(message, room) {
     body = JSON.stringify({
         author: author,
         message: message,
-        room: 1,
+        room: roomName,
         room_blank: room
     });
     const options = {
@@ -130,7 +130,7 @@ function startWebsocket() {
     const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
-        + '/ws/chat_with/'
+        + '/ws/common_room/'
         + roomName
         + '/'
     );
@@ -254,7 +254,7 @@ async function displayResult() {
 // Собрать все в одну функцию
 window.addEventListener('load', () => { 
     async function start() {
-        await checkRoom(getRoom) 
+        // await checkRoom(getRoom) 
         await displayResult()
         await startWebsocket()
         }
