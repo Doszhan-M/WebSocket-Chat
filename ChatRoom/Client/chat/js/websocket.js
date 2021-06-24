@@ -59,13 +59,13 @@ window.addEventListener('load', () => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Повторяет переданную функцию через рандомное время в заданном промежутке 20 раз
+    // Повторяет переданную функцию через рандомное время в заданном промежутке 30 раз
     let count = 0
     function runInterval(func) {
         let interval = getRndInteger(5000, 15000)
         setTimeout(() => {
             func()
-            if (count < 20){
+            if (count < 30){
                 runInterval(func)
                 count++
             }
