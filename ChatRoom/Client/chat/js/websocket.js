@@ -6,7 +6,7 @@ window.addEventListener('load', () => {
         + window.location.host
         + '/ws/chat_with/common/'
     );
-    
+
     let flag = false //флаг нужен для определения кто пишет в чат, сам юзер или бот
 
     // Поведение при получении сообщении из сервера
@@ -49,6 +49,7 @@ window.addEventListener('load', () => {
     // Поведение при открытии соединения
     chatSocket.onopen = function (e) {
         runInterval(fakeChat)
+        
     }
 
     // Описание функции имитации бурного общения в общем чате_____________________________________________________
@@ -58,17 +59,18 @@ window.addEventListener('load', () => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Повторяет переданную функцию через рандомное время в заданном промежутке
+    // Повторяет переданную функцию через рандомное время в заданном промежутке 20 раз
+    let count = 0
     function runInterval(func) {
-        let count = 0
-        for(let i = 0; i < 20; i++) {
-            count ++
-            let interval = getRndInteger(5000, 15000)
-            setTimeout(() => {
-                func()
+        let interval = getRndInteger(5000, 15000)
+        setTimeout(() => {
+            func()
+            if (count < 20){
                 runInterval(func)
-            }, interval);
-        }
+                count++
+            }
+        }, interval);
+
     }
     // Функция запроса за данными пользователя, возвращает массив объектов с данными пользователей
     const allProfileData = async () => {
@@ -94,10 +96,10 @@ window.addEventListener('load', () => {
         ];
         const randomMess = Math.floor(Math.random() * months.length);
         let message = months[randomMess];
-        
+
         let userList
         await allProfileData().then(data => userList = data)
-        
+
         let array = []
         userList.forEach(element => {
             array.push(element.name)
