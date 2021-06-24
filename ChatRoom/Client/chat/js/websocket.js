@@ -58,13 +58,17 @@ window.addEventListener('load', () => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Повторяет переданную функцию за рандомное время в заданном промежутке
+    // Повторяет переданную функцию через рандомное время в заданном промежутке
     function runInterval(func) {
-        let interval = getRndInteger(5000, 15000)
-        setTimeout(() => {
-            func()
-            runInterval(func)
-        }, interval);
+        let count = 0
+        for(let i = 0; i < 20; i++) {
+            count ++
+            let interval = getRndInteger(5000, 15000)
+            setTimeout(() => {
+                func()
+                runInterval(func)
+            }, interval);
+        }
     }
     // Функция запроса за данными пользователя, возвращает массив объектов с данными пользователей
     const allProfileData = async () => {
