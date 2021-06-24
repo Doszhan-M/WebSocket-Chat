@@ -9,7 +9,7 @@ $ sudo apt-get update
 $ sudo apt-get install redis
 $ redis-server
 ```
-если вы используете ос Windows, то предпочтительно пользоваться Redis средствами Docker!
+если вы используете ос Windows, то предпочтительно пользоваться Redis средствами Docker либо WSL2!
 ```
 docker run --name redis-server -d redis
 ```
