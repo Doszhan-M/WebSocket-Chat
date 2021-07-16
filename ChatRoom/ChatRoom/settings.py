@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'allauth',
     'allauth.account',
+    'corsheaders',
 
     'chat_app',
 ]
