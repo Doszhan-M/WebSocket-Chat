@@ -14,7 +14,8 @@ window.addEventListener('load', () => {
     }
     var csrftoken = getCookie('csrftoken'); 
 
-    const host = 'http://127.0.0.1:8000/'
+    const host = 'http://195.149.87.163:8000/'
+    // const host = 'http://127.0.0.1:8000/'
     let resultNode = document.querySelector('.slaider')
     let myRoom  // переменная для пункта 5
 
