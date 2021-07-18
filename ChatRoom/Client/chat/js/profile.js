@@ -1,6 +1,7 @@
 import { host } from '/static/js/const.js'
 import { csrftoken } from '/static/js/const.js'
 
+console.log(host)
 
 const resultNode = document.querySelector('.profile');
 const ava_image = document.getElementById('ava_image')
