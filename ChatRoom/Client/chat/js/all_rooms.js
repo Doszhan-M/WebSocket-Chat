@@ -1,4 +1,4 @@
-import {const} from 'static/js/const.js'
+import {host} from 'static/js/const.js'
 /*Алгоритм:
 1. Сделать запрос на все комнаты и положить их в слайдер по отдельности
 2. Организовать слайдер для показа комнат
