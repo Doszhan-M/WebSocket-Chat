@@ -1,19 +1,11 @@
+import { host } from '/static/js/const.js'
+import { csrftoken } from '/static/js/const.js'
+
 /*Алгоритм входа в комнату:
 1. Сделать запрос на проверку комнаты со своим именем, если такая комната уже существует, то  
     название комнаты будет та же, иначе создаем новую комнату из адреса
 2. Открыть websocket с названием комнаты и сразу загрузить историю чата
 3. Получить и вывести данные собеседника*/
-
-
-// Получить токен и объявить хост________________________________________________________________
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-var csrftoken = getCookie('csrftoken');
-const host = 'http://127.0.0.1:8000/'
 
 // Пункт 1____________________________________________________________________________________________
 
@@ -26,8 +18,9 @@ const getRoom = async (name) => {
     return await fetch(`${host}room_get/?room=${name}`)
         .then((response) => { return response.json(); })
         .then((data) => { return data; })
-        .catch(() => { console.log('------') 
-    });
+        .catch(() => {
+            console.log('------')
+        });
 }
 
 // Функция получения своего своего профиля для имени
@@ -63,8 +56,8 @@ const createRoom = (roomName) => {
 // Функция проверки комнаты
 async function checkRoom(getRoom) {
     let myName;
-    await getMyName().then(data => {myName = data.name})
-    
+    await getMyName().then(data => { myName = data.name })
+
     searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
     searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
 
@@ -81,14 +74,15 @@ async function checkRoom(getRoom) {
     if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие общественной комнаты
         let myRoom
         await getRoom(myName).then(data => myRoom = data)
-            if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
-                window.location.href = `${host}all_rooms/`;
-            }
+        if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
+            window.location.href = `${host}all_rooms/`;
+        }
     } else { // Если в базе нет подходящей комнаты, то создать и передать ее для websocket
         if (roomsArray.length == 0) {
             console.log('Создать комнату')
             createRoom(searchRoom1)
-            roomName = searchRoom1}
+            roomName = searchRoom1
+        }
         if (roomsArray.length > 0) { // если есть такая комната, то зайти в нее
             console.log('roomsArray[0]', roomsArray[0])
             roomName = roomsArray[0]
@@ -252,12 +246,12 @@ async function displayResult() {
 }
 
 // Собрать все в одну функцию
-window.addEventListener('load', () => { 
+window.addEventListener('load', () => {
     async function start() {
-        await checkRoom(getRoom) 
+        await checkRoom(getRoom)
         await displayResult()
         await startWebsocket()
-        }
+    }
 
     start()// Выполнить    
 })
