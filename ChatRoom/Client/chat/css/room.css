@@ -48,10 +48,8 @@
 }
 @media screen and (max-width: 1080px) {
     .chat_box {
-        /* margin: 5%; */
         height: 60%;
         width: 400pt;
-        /* background-color: black; */
     }
   }
     .chat {
@@ -109,6 +107,12 @@
         text-decoration: none;
         font-size: 16px;
     }
+
+    @media screen and (max-width: 1080px) {
+        .jbtn {
+            background-color: #4CAF50;
+        }
+      }
 
     .bt:active { /* Добавляем псевдокласс :active */
         box-shadow: 0 0 hsl(5, 60%, 60%); /* Уменьшаем тень */
