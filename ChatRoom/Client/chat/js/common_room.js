@@ -1,3 +1,6 @@
+import { host } from '/static/js/const.js'
+import { csrftoken } from '/static/js/const.js'
+
 /*Алгоритм входа в комнату:
 1. Сделать запрос на проверку комнаты со своим именем, если такая комната уже существует, то  
     название комнаты будет та же, иначе создаем новую комнату из адреса
@@ -5,30 +8,10 @@
 3. Получить и вывести данные собеседника*/
 
 
-// Получить токен и объявить хост________________________________________________________________
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-var csrftoken = getCookie('csrftoken');
-const host = 'http://127.0.0.1:8000/'
-
 // Пункт 1____________________________________________________________________________________________
 
 // Название и владелец комнаты присвоить из URL
 let roomName = JSON.parse(document.getElementById('room-name').textContent);
-const owner = JSON.parse(document.getElementById('room-name').textContent);
-
-// Функция поиска комнаты в БД
-const getRoom = async (name) => {
-    return await fetch(`${host}room_get/?room=${name}`)
-        .then((response) => { return response.json(); })
-        .then((data) => { return data; })
-        .catch(() => { console.log('------') 
-    });
-}
 
 // Функция получения своего своего профиля для имени
 const getMyName = async () => {
@@ -37,64 +20,6 @@ const getMyName = async () => {
         .then((data) => { return data; })
         .catch(() => { console.log('error profile_data') });
 }
-
-// Функция создания приватной комнаты чата в бд
-const createRoom = (roomName) => {
-    body = JSON.stringify({
-        room: roomName,
-        owner: 1
-    });
-    const options = {
-        method: 'POST',
-        // Добавим тело запроса
-        body: body,
-        headers: {
-            "Content-type": "application/json",
-            "X-CSRFToken": csrftoken
-        }
-    }
-    // Отправить post запрос
-    fetch('http://127.0.0.1:8000/create_room/', options)
-        .then(response => response.json())
-        .then(json => console.log(json))
-        .catch(() => { console.log('такая комната уже существует') });
-}
-
-// // Функция проверки комнаты
-// async function checkRoom(getRoom) {
-//     let myName;
-//     await getMyName().then(data => {myName = data.name})
-    
-//     searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
-//     searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
-
-//     let roomsArray = [];
-//     await getRoom(searchRoom1).then(data => {
-//         roomsArray.push(data.room)
-//     })
-//     await getRoom(searchRoom2).then(data => {
-//         roomsArray.push(data.room)
-//     })
-//     roomsArray = roomsArray.filter(item => item !== undefined)
-//     console.log('roomsArray.length', roomsArray.length)
-
-//     if (roomName == myName) {// Если пользователь зашел к себе, то проверить наличие общественной комнаты
-//         let myRoom
-//         await getRoom(myName).then(data => myRoom = data)
-//             if (myRoom.room == undefined) { // если комнаты нет, то перенаправить
-//                 window.location.href = `${host}all_rooms/`;
-//             }
-//     } else { // Если в базе нет подходящей комнаты, то создать и передать ее для websocket
-//         if (roomsArray.length == 0) {
-//             console.log('Создать комнату')
-//             createRoom(searchRoom1)
-//             roomName = searchRoom1}
-//         if (roomsArray.length > 0) { // если есть такая комната, то зайти в нее
-//             console.log('roomsArray[0]', roomsArray[0])
-//             roomName = roomsArray[0]
-//         }
-//     }
-// }
 
 // Пункт 2____________________________________________________________________________________________
 
