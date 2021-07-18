@@ -44,7 +44,7 @@ async function createMessage(message, room) {
         }
     }
     // Сделать post запрос
-    await fetch('http://127.0.0.1:8000/message_create/', options)
+    await fetch(`${host}message_create/`, options)
         .then(response => response.json())
         .then(json => console.log(json))
         .catch(() => { console.log('не удалось создать сообщение') });
@@ -76,7 +76,7 @@ function startWebsocket() {
                         let div = document.createElement('div');
                         div.classList.add('chat_log')
                         // Собрать html сообщения и вставить его в div
-                        message = `
+                        let message = `
                                 <div class="name">
                                     <p>${newMessageContent.author}</p>
                                 </div>
