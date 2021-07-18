@@ -63,7 +63,7 @@ window.addEventListener('load', () => {
         card.innerHTML = `
           <h2>Комната пользователя: </h2>
           <div class="owner">
-              <img src="${room.my_field}" alt="ava" width="120">
+              <img src="${host + room.my_field}" alt="ava" width="120">
               <h2>${room.room}</h2>
           </div>
           <div class="btns">
