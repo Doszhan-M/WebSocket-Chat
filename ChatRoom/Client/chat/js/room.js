@@ -33,7 +33,7 @@ const getMyName = async () => {
 
 // Функция создания приватной комнаты чата в бд
 const createRoom = (roomName) => {
-    body = JSON.stringify({
+    let body = JSON.stringify({
         room: roomName,
         owner: 1
     });
@@ -97,7 +97,7 @@ async function createMessage(message, room) {
     let author;
     await getMyName().then(data => author = data.name)
 
-    body = JSON.stringify({
+    let body = JSON.stringify({
         author: author,
         message: message,
         room: 1,
