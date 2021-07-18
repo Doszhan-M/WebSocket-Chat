@@ -9,12 +9,12 @@
     display: flex;
     flex-direction: column;
     /* align-items: center; */
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 .image_container {
     width: 95%;
-    margin: auto;
+    /* margin: auto; */
     border: 5px solid #177acc;
     background-color: #177acc;
     overflow: hidden;
@@ -33,7 +33,7 @@
 
 .btn_warp {
     display: inline-flex;
-    margin-top: 1%;
+    /* margin-top: 1%; */
     justify-content: space-between;
 }
 
