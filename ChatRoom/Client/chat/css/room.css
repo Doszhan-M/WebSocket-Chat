@@ -46,7 +46,7 @@
     background-color: red;
     
 }
-@media screen and (max-device-height: 640px) {
+@media screen and (max-device-width: 320px) {
     .chat_box {
         margin: 5%;
         height: 100%;
