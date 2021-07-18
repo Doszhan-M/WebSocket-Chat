@@ -108,12 +108,6 @@
         font-size: 16px;
     }
 
-    @media screen and (max-width: 340px) {
-        .jbtn {
-            background-color: red;
-        }
-      }
-
     .bt:active { /* Добавляем псевдокласс :active */
         box-shadow: 0 0 hsl(5, 60%, 60%); /* Уменьшаем тень */
         border: 1px solid hsl(5, 40%, 70%); /* Уменьшаем толщину рамки */
