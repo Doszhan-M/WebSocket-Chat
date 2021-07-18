@@ -58,8 +58,8 @@ async function checkRoom(getRoom) {
     let myName;
     await getMyName().then(data => { myName = data.name })
 
-    searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
-    searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
+    let searchRoom1 = `${myName + '_' + roomName}` // Название комнаты
+    let searchRoom2 = `${roomName + '_' + myName}` // Название комнаты
 
     let roomsArray = [];
     await getRoom(searchRoom1).then(data => {
