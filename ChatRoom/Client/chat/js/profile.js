@@ -1,13 +1,7 @@
-// Получить токен и объявить переменные________________________________________________________________
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
+import { host } from '/static/js/const.js'
+import { csrftoken } from '/static/js/const.js'
 
-var csrftoken = getCookie('csrftoken');
 
-const host = 'http://127.0.0.1:8000/'
 const resultNode = document.querySelector('.profile');
 const ava_image = document.getElementById('ava_image')
 let image = false // флаг нужен для формирования formData
@@ -15,7 +9,7 @@ let image = false // флаг нужен для формирования formDat
 // обработчик события 'change' (происходит после выбора файла) 
 file_attach.addEventListener('change', () => {
   console.log(file_attach.files[0])
-  image = true 
+  image = true
 });
 
 // Функция запроса за данными пользователя
@@ -27,14 +21,14 @@ const profileData = async () => {
 }
 
 // Функция показа аватарки пользователя
-async function getAvaImage () {
+async function getAvaImage() {
   let profile
   await profileData().then(data => profile = data);
-  if (profile.avatar == null){
+  if (profile.avatar == null) {
     ava_image.src = "/static/img/256x256/256_1.png"
   } else {
-  imgUrl = profile.avatar.replace(host, '/')
-  ava_image.src = imgUrl
+    imgUrl = profile.avatar.replace(host, '/')
+    ava_image.src = imgUrl
   }
 }
 
@@ -63,12 +57,14 @@ async function displayResult(profileData) {
   resultNode.insertAdjacentHTML('beforeend', card)
 
   // Поле имени можно вводить только латиницей
-  document.getElementById('name').addEventListener('keyup', function(){
-    this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');});
-  
+  document.getElementById('name').addEventListener('keyup', function () {
+    this.value = this.value.replace(/[^[a-zA-Z\s]/g, '');
+  });
+
   // Поле имени можно вводить только латиницей
-  document.getElementById('age').addEventListener('keyup', function(){
-    this.value = this.value.replace(/[^0-9+]/g, '');});
+  document.getElementById('age').addEventListener('keyup', function () {
+    this.value = this.value.replace(/[^0-9+]/g, '');
+  });
 
   //Получить аватарку
   getAvaImage()
@@ -76,46 +72,46 @@ async function displayResult(profileData) {
 
 // Функция отправки измененных данных профиля
 async function sendNewData() {
-    const img_attach = document.getElementById('file_attach')
-    const form = document.querySelector('.js-form');
+  const img_attach = document.getElementById('file_attach')
+  const form = document.querySelector('.js-form');
 
-    // Настроить запрос
-    const formData = new FormData();
-    formData.append('name', form.name.value,);
-    formData.append('description', form.description.value,);
-    formData.append('location', form.location.value,);
-    formData.append('age', form.age.value,);
-    if (image) {
-      formData.append('avatar', img_attach.files[0]);
-      image = false
+  // Настроить запрос
+  const formData = new FormData();
+  formData.append('name', form.name.value,);
+  formData.append('description', form.description.value,);
+  formData.append('location', form.location.value,);
+  formData.append('age', form.age.value,);
+  if (image) {
+    formData.append('avatar', img_attach.files[0]);
+    image = false
+  }
+
+  const options = {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      "X-CSRFToken": csrftoken
     }
+  }
+  // Сделать запрос
+  await fetch('http://127.0.0.1:8000/profile_update/', options)
+    .then(response => response.json())
+    .then(json => {
+      console.log('json', json)
+      // Вывод уведомления после успешного запроса
+      const elem = document.querySelector('.title');
+      let alert1 = document.createElement('div');
+      alert1.classList.add('toast', 'toast_show')
+      alert1.innerHTML = `<h3>Успешно сохранено</h3>`;
+      elem.after(alert1)
 
-    const options = {
-      method: 'PUT',
-      body: formData,
-      headers: {
-        "X-CSRFToken": csrftoken
-      }
-    }
-    // Сделать запрос
-    await fetch('http://127.0.0.1:8000/profile_update/', options)
-      .then(response => response.json())
-      .then(json => {
-        console.log('json', json)  
-        // Вывод уведомления после успешного запроса
-        const elem = document.querySelector('.title');
-        let alert1 = document.createElement('div');
-        alert1.classList.add('toast', 'toast_show')
-        alert1.innerHTML = `<h3>Успешно сохранено</h3>`;
-        elem.after(alert1)
-        
-        setTimeout(() => { // удалить сообщение
-          alert1.classList.remove('toast_show');
-        }, 4000)
-      })
-      .catch(() => { console.error(response)});
+      setTimeout(() => { // удалить сообщение
+        alert1.classList.remove('toast_show');
+      }, 4000)
+    })
+    .catch(() => { console.error(response) });
 
-    getAvaImage() // Обновить аватарку
+  getAvaImage() // Обновить аватарку
 }
 
 // обработчик на кнопку 'изменить'
@@ -124,17 +120,17 @@ async function editProfile() {
 
   btn.addEventListener('click', () => {
     sendNewData() // отправить данные
-      
+
 
   })
 }
 
 // Собрать все в одну функцию
-window.addEventListener('load', () => { 
-    async function start() {
-      await displayResult(profileData)
-      await editProfile()
-      }
+window.addEventListener('load', () => {
+  async function start() {
+    await displayResult(profileData)
+    await editProfile()
+  }
 
-    start()// Выполнить    
+  start()// Выполнить    
 })
