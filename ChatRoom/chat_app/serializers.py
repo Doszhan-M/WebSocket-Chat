@@ -16,7 +16,7 @@ class AllRoomSerializer(serializers.ModelSerializer):
 
     def get_my_field(self, obj):
         owner = str(obj.room)
-        my_field = 'http://127.0.0.1:8000/media/' + str(UserProfile.objects.get(name=owner).avatar)
+        my_field = 'media/' + str(UserProfile.objects.get(name=owner).avatar)
         return my_field
 
     class Meta:
