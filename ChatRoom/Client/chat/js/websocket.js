@@ -1,3 +1,5 @@
+import { host } from '/static/js/const.js'
+
 window.addEventListener('load', () => {
 
     // Открыть канал websocket для общего чата
