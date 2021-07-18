@@ -89,7 +89,7 @@
 }
 
 .enter {
-    margin-right: 1%;
+    margin: 1%;
     background-color: #4CAF50;
     border: none;
     border-radius: 5px;
@@ -104,7 +104,7 @@
         color: beige;
     }
 .delete {
-    margin-left: 1%;
+    margin: 1%;
     background-color: #b13742;;
     border: none;
     border-radius: 5px;
