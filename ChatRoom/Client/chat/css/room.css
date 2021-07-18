@@ -41,14 +41,14 @@
 
 .chat_box {
     margin-left: 5%;
-    height: 300pt;
+    height: 400pt;
     width: 500pt;
     
 }
 @media screen and (max-width: 600px) {
     .chat_box {
         margin: 5%;
-        height: 500pt;
+        height: 700pt;
         width: 400pt;
     }
   }
