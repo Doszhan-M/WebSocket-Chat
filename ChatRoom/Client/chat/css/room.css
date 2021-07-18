@@ -43,15 +43,15 @@
     margin-left: 5%;
     height: 350pt;
     width: 500pt;
-    background-color: red;
+    /* background-color: red; */
     
 }
-@media screen and (max-width: 620px) {
+@media screen and (max-width: 1085px) {
     .chat_box {
         /* margin: 5%; */
         height: 100%;
         width: 400pt;
-        background-color: black;
+        /* background-color: black; */
     }
   }
     .chat {
