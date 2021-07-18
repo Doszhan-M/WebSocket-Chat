@@ -145,7 +145,7 @@ function startWebsocket() {
                         let div = document.createElement('div');
                         div.classList.add('chat_log')
                         // Собрать html сообщения и вставить его в div
-                        message = `
+                        let message = `
                                 <div class="name">
                                     <p>${newMessageContent.author}</p>
                                 </div>
