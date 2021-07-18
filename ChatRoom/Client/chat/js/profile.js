@@ -28,7 +28,7 @@ async function getAvaImage() {
   if (profile.avatar == null) {
     ava_image.src = "/static/img/256x256/256_1.png"
   } else {
-    imgUrl = profile.avatar.replace(host = host, '/')
+    imgUrl = profile.avatar
     ava_image.src = imgUrl
   }
 }
