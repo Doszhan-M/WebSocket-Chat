@@ -108,7 +108,7 @@
         font-size: 16px;
     }
 
-    @media screen and (max-width: 1080px) {
+    @media screen and (max-width: 640px) {
         .jbtn {
             background-color: red;
         }
