@@ -1,4 +1,4 @@
-export const host = window.location.host + '/'
+export const host = window.location + '/'
 console.log('window.location.host', host)
 // Получить токен и объявить переменные________________________________________________________________
 function getCookie(name) {
