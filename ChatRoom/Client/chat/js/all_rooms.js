@@ -1,3 +1,4 @@
+import {const} from 'static/js/const.js'
 /*Алгоритм:
 1. Сделать запрос на все комнаты и положить их в слайдер по отдельности
 2. Организовать слайдер для показа комнат
@@ -14,7 +15,7 @@ window.addEventListener('load', () => {
     }
     var csrftoken = getCookie('csrftoken'); 
 
-    const host = 'http://195.149.87.162:8000/'
+    // const host = 'http://195.149.87.162:8000/'
     // const host = 'http://127.0.0.1:8000/'
     let resultNode = document.querySelector('.slaider')
     let myRoom  // переменная для пункта 5
