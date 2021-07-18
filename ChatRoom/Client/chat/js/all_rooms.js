@@ -156,7 +156,7 @@ window.addEventListener('load', () => {
     
     // Функция удаления своей комнаты
     function dell (myRoom) {
-      dellBtn = document.querySelector('.delete');
+      let dellBtn = document.querySelector('.delete');
 
       const deleteRoom = async() => {
         const options = {
