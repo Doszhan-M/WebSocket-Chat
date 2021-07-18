@@ -1,17 +1,16 @@
 .room {
     display: flex;
     width: 90%;
-    margin-bottom: 5%;
-    /* margin-left: -5%; */
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .chat_user {
     display: flex;
     flex-direction: column;
+    max-width: 30%;
     align-items: center;
     color: rgb(95, 112, 106);    
-    margin-left: -2%;
+    /* margin: 5%; */
 }
 
     .chat_user p {
@@ -26,7 +25,6 @@
 
     .self {
         font-weight: bold ;
-        /* margin-bottom: -2%; */
         margin-top: 7%;
     }
 
@@ -35,17 +33,25 @@
     }
 
     .description {
-        width: 70%;
+        width: 100%;
         background-color: rgb(220, 236, 193);
         padding: 2%;
         border-radius: 3%;
     }
 
 .chat_box {
+    margin-left: 5%;
     height: 300pt;
     width: 500pt;
     
 }
+@media screen and (max-width: 600px) {
+    .chat_box {
+        margin: 5%;
+        height: 300pt;
+        width: 400pt;
+    }
+  }
     .chat {
         height: 99%;
         background-color: aliceblue;
@@ -58,7 +64,6 @@
         width: 95%;
         height: 60pt;
         margin-top: 1%;
-        /* background-color: #774caf; */
         display: flex;
         justify-content: center;
         border-radius: 20%;
@@ -78,6 +83,7 @@
         font-size: 30px;
         text-align: center;
     }
+
     .name {
         width: 18%;
         background-color: #14bddb;
@@ -85,7 +91,7 @@
     }
     .message {
         margin-top: 3%;
-        width: 500pt;
+        width: 100%;
 
     }
     .jbtn {
