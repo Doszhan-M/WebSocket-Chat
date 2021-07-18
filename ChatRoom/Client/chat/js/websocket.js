@@ -43,9 +43,9 @@ window.addEventListener('load', () => {
     };
 
     // Поведение при закрытии websocket
-    chatSocket.onclose = function (e) {
-        console.error('Chat socket closed unexpectedly');
-    };
+    // chatSocket.onclose = function (e) {
+    //     console.error('Chat socket closed unexpectedly');
+    // };
 
 
     // Поведение при открытии соединения
