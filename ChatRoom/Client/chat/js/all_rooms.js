@@ -125,7 +125,7 @@ window.addEventListener('load', () => {
     const createBtn = document.querySelector('.create')
       // Функция создания своей комнаты в бд
     function createRoom () {
-      body = JSON.stringify({
+      let body = JSON.stringify({
           room: 'roomName', //название комнаты сервер обработает сам, любое значение
           is_common: true // не приватная комната
       });
