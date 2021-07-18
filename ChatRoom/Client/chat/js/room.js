@@ -47,7 +47,7 @@ const createRoom = (roomName) => {
         }
     }
     // Отправить post запрос
-    fetch('http://127.0.0.1:8000/create_room/', options)
+    fetch(`${host}create_room/`, options)
         .then(response => response.json())
         .then(json => console.log(json))
         .catch(() => { console.log('такая комната уже существует') });
