@@ -1,17 +1,13 @@
 .main {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     /* justify-content: center; */
 }
 
 .header {
     color: rgb(107, 78, 238);
     text-align: center;
-    margin: 2%;
-}
-
-.bt create {
     margin: 2%;
 }
 
