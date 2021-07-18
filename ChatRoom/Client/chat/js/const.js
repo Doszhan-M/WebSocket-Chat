@@ -1,4 +1,4 @@
-export const host = window.location
+export const host = 'http://195.149.87.162:8000/'
 
 // Получить токен и объявить переменные________________________________________________________________
 function getCookie(name) {
