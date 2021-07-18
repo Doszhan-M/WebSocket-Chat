@@ -43,6 +43,7 @@
     margin-left: 5%;
     height: 350pt;
     width: 500pt;
+    background-color: red;
     
 }
 @media screen and (max-width: 600px) {
@@ -50,6 +51,7 @@
         margin: 5%;
         height: 100%;
         width: 400pt;
+        background-color: black;
     }
   }
     .chat {
