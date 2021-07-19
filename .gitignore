@@ -3,6 +3,7 @@
 **/.idea/
 **/__pycache__/
 dump.rdb
+db.sqlite3
 favicon.ico:Zone.Identifier
 **/.vscode/
 
