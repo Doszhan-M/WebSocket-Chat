@@ -28,7 +28,7 @@ async function createMessage(message, room) {
     let author;
     await getMyName().then(data => author = data.name)
 
-    body = JSON.stringify({
+    let body = JSON.stringify({
         author: author,
         message: message,
         room: roomName,
@@ -104,7 +104,7 @@ function startWebsocket() {
         let div = document.createElement('div');
         div.classList.add('chat_log')
         // Собрать html сообщения и вставить его в div
-        message = `
+        let message = `
             <div class="name">
                 <p>${newMessageContent.name}</p>
             </div>
